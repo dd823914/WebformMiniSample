@@ -11,17 +11,10 @@ namespace AccountingNote.DBSource
 {
 	public class AccountingManger 
 	{
-		private static string GetConnectingString()
-		{
-
-			string val = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-			return val;
-		}
-
-		
+	
 		public static DataTable GetAccountingList(string userID)
 		{
-			string connStr = GetConnectingString();
+			string connStr =DBHelper.GetConnectingString();
 			string dbCommand = $@"SELECT ID, Caption, Amount, ActType, CreateDate
                                 FROM  Accounting
 								WHERE UserID = @userID
@@ -57,7 +50,7 @@ namespace AccountingNote.DBSource
 		/// <returns></returns>
 		public static DataRow GetAccounting(int id, string userID)  //查詢資料庫資料
 		{
-			string connStr = GetConnectingString();
+			string connStr = DBHelper.GetConnectingString();
 			string dbCommand = $@"SELECT ID, Caption, Amount, ActType, CreateDate,Body
                                 FROM  Accounting
 								WHERE id = @id AND UserID = @userID;
@@ -104,7 +97,7 @@ namespace AccountingNote.DBSource
 				throw new ArgumentException("amount must between 0 and 1,000,000");
 			if (actType < 0 || actType > 1)
 				throw new ArgumentException("actype must be 0 or 1.");
-			string connStr = GetConnectingString();
+			string connStr = DBHelper.GetConnectingString();
 			string dbCommand =
 				$@"INSERT INTO [dbo].[Accounting]
                   (UserID
@@ -166,7 +159,7 @@ namespace AccountingNote.DBSource
 				throw new ArgumentException("amount must between 0 and 1,000,000");
 			if (actType < 0 || actType > 1)
 				throw new ArgumentException("actype must be 0 or 1.");
-			string connStr = GetConnectingString();
+			string connStr = DBHelper.GetConnectingString();
 			string dbCommand =
 				$@"UPDATE [Accounting]
 				   SET
@@ -215,7 +208,7 @@ namespace AccountingNote.DBSource
 		public static void DeleteAccounting(int ID)
 		{
 			
-			string connStr = GetConnectingString();
+			string connStr = DBHelper.GetConnectingString();
 			string dbCommand =
 				$@"DELETE [Accounting]
 				 WHERE ID = @id

@@ -11,16 +11,9 @@ namespace AccountingNote.DBSource
 {
     public class UserInfoManger
     {
-		private static string GetConnectingString()
-		{
-
-		
-			string val = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-			return val;
-		}
 		public static DataRow GetUserInfoByAccount(string account)
 		{
-			string connectionString = GetConnectingString();
+			string connectionString =DBHelper.GetConnectingString();
 			string dbCommandString = @"SELECT  [ID] ,[Account]  ,[PWD] ,[Name] ,[Email]
 									  FROM UserInfo
 									  WHERE  [Account]  = @account;
