@@ -14,34 +14,26 @@ namespace AccountingNote.DBSource
 	
 		public static DataTable GetAccountingList(string userID)
 		{
-			string connStr =DBHelper.GetConnectingString();
+			string connStr = DBHelper.GetConnectingString();
 			string dbCommand = $@"SELECT ID, Caption, Amount, ActType, CreateDate
                                 FROM  Accounting
 								WHERE UserID = @userID
                                ";
-			using (SqlConnection conn = new SqlConnection(connStr))
+
+			List<SqlParameter> list = new List<SqlParameter>();
+			list.Add(new SqlParameter("@userID", userID));
+			try
 			{
-				using (SqlCommand comm = new SqlCommand(dbCommand, conn))
-				{
-					comm.Parameters.AddWithValue("@userID", userID);
-					try
-					{
-						conn.Open();
-						var reader = comm.ExecuteReader();
-
-						DataTable dt = new DataTable();
-						dt.Load(reader);
-
-						return dt;
-					}
-					catch (Exception ex)
-					{
-						Logger.writeLog(ex);
-						return null;
-					}
-				}
+				return DBHelper.ReadDataTable(connStr, dbCommand, list);
+			}
+			catch (Exception ex)
+			{
+				Logger.writeLog(ex);
+				return null;
 			}
 		}
+
+
 		/// <summary>
 		/// 查詢流水帳清單
 		/// </summary>
