@@ -11,6 +11,7 @@ namespace AccountingNote.DBSource
 {
     public class UserInfoManger
     {
+		
 		public static DataRow GetUserInfoByAccount(string account)
 		{
 			string connectionString =DBHelper.GetConnectingString();
@@ -20,40 +21,22 @@ namespace AccountingNote.DBSource
                                       ";
 
 
-			using (SqlConnection connection = new SqlConnection(connectionString))
+
+			List<SqlParameter> list = new List<SqlParameter>();
+			list.Add(new SqlParameter("@account", account));
+
+			try
 			{
-				using (SqlCommand command = new SqlCommand(dbCommandString, connection))
-				{
-					command.Parameters.AddWithValue("@account", account);
+				return DBHelper.ReadDataRow(connectionString, dbCommandString, list);
 
-					try
-					{
-						connection.Open();
-						SqlDataReader reader = command.ExecuteReader();
-
-						DataTable dt = new DataTable();        //datatable表示記憶體中資料的一個資料表。
-						dt.Load(reader);
-						reader.Close();
-
-						if (dt.Rows.Count == 0)
-						{
-							return null;
-
-						}
-						DataRow dr = dt.Rows[0];         
-						return dr;
-
-
-					}
-					catch (Exception ex)
-					{
-						Logger.writeLog(ex);
-						Console.WriteLine(ex.ToString());
-						return null;                     
-					}
-				}
 			}
-		}
+			catch (Exception ex)
+			{
+				Logger.writeLog(ex);
+				return null;
+			}
+			
+	    }
 
 	}
 }

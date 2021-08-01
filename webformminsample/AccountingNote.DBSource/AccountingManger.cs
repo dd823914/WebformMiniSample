@@ -47,32 +47,23 @@ namespace AccountingNote.DBSource
                                 FROM  Accounting
 								WHERE id = @id AND UserID = @userID;
                                ";
-			using (SqlConnection conn = new SqlConnection(connStr))
+
+			List<SqlParameter> list = new List<SqlParameter>();
+			list.Add(new SqlParameter("@id", id));
+			list.Add(new SqlParameter("@userID", userID));
+			try
 			{
-				using (SqlCommand comm = new SqlCommand(dbCommand, conn))
-				{
-					comm.Parameters.AddWithValue("@id", id);
-					comm.Parameters.AddWithValue("@userID", userID);
-					try
-					{
-						conn.Open();
-						var reader = comm.ExecuteReader();
+				return DBHelper.ReadDataRow(connStr, dbCommand, list);
 
-						DataTable dt = new DataTable();
-						dt.Load(reader);
-
-						if (dt.Rows.Count == 0)
-							return null;
-						return dt.Rows[0];
-					}
-					catch (Exception ex)
-					{
-						Logger.writeLog(ex);
-						return null;
-					}
-				}
 			}
+			catch (Exception ex)
+			{
+				Logger.writeLog(ex);
+				return null;
+			}
+			
 		}
+
 
 		/// <summary>
 		/// 建立流水帳
