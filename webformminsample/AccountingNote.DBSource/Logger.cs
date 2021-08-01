@@ -10,6 +10,12 @@ namespace AccountingNote.DBSource
 	{
 		public static void writeLog(Exception ex)
 		{
+			string msg =
+			$@" {DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}
+				{ex.ToString()}
+
+			";
+			System.IO.File.AppendAllText("D:\\Logs\\Log.log",msg);
 			throw ex;
 		}
 	}
