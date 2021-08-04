@@ -1,4 +1,5 @@
-﻿using AccountingNote.DBSource;
+﻿using AccountingNote.Auth;
+using AccountingNote.DBSource;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,15 +14,18 @@ namespace AccountingNote.SystemAdmin
 		protected void Page_Load(object sender, EventArgs e)
 		{
 			//check is logined
-			if (this.Session["UserLoginInfo"] == null)
+			if (!AuthManger.IsLogined())
 			{
 				Response.Redirect("/Login.aspx");
 				return;
 			}
-			string account = this.Session["UserLoginInfo"] as string;
-			var drUserInfo = UserInfoManger.GetUserInfoByAccount(account);
-			if (drUserInfo == null)
+			
+			var currentUser = AuthManger.GetCurrentUser();
+
+
+			if (currentUser == null)                                               //如帳號不存在導至登入頁
 			{
+				this.Session["UserLoginInfo"] = null;
 				Response.Redirect("/Login.aspx");
 				return;
 			}
@@ -30,7 +34,7 @@ namespace AccountingNote.SystemAdmin
 			{
 
 				//check is  create mode or edit mode
-				if (this.Request.QueryString["ID"] != null)   //編輯
+				if (this.Request.QueryString["ID"] == null)   //編輯
 				{
 					this.btnDelete.Visible = false;
 				}
@@ -41,7 +45,7 @@ namespace AccountingNote.SystemAdmin
 					int id;
 					if (int.TryParse(idText, out id))
 					{
-						var drAccounting = AccountingManger.GetAccounting(id, drUserInfo["UserID"].ToString());    //作保護
+						var drAccounting = AccountingManger.GetAccounting(id, currentUser.ID);    //作保護
 						if (drAccounting == null)
 						{
 							this.ltMsg.Text = "data doesn't exsit";
@@ -50,7 +54,7 @@ namespace AccountingNote.SystemAdmin
 						}
 						else
 						{
-							if (drAccounting["UserID"].ToString() == drUserInfo["ID"].ToString());
+							
 							this.ddlActType.SelectedValue = drAccounting["AcyType"].ToString();
 							this.txtAmount.Text = drAccounting["Amount"].ToString();
 							this.txtCaption.Text = drAccounting["Caption"].ToString();
@@ -69,24 +73,21 @@ namespace AccountingNote.SystemAdmin
 
 		protected void btnSave_Click(object sender, EventArgs e)
 		{
+			List<string> msgList = new List<string>();
+			if(!this.CheckInput(out msgList))
+			{
+				this.ltMsg.Text = string.Join("<br/>", msgList);
+			}
+
+			UserInfoModel currentUser = AuthManger.GetCurrentUser();
 	
-			string account = this.Session["UserLoginInfo"] as string; //讀取使用者id
-			var dr = UserInfoManger.GetUserInfoByAccount(account);
-			if (dr == null)
+			if (currentUser == null)
 			{
 				Response.Redirect("/Login.aspx");
 				return;
 			}
 
-			List<string> msgList = new List<string>();
-
-			if (!this.CheckInput(out msgList))
-			{
-				this.ltMsg.Text = string.Join("<br/>", msgList);
-				return;
-			}
-
-			string userID = dr["ID"].ToString();                  //使用者欄位
+			string userID = currentUser.ID;                  //使用者欄位
 			string actTypeText = this.ddlActType.SelectedValue;
 			string amountText = this.txtAmount.Text;
 			string caption = this.txtCaption.Text;

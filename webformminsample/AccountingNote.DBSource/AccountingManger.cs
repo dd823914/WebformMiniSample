@@ -9,30 +9,8 @@ using System.Threading.Tasks;
 
 namespace AccountingNote.DBSource
 {
-	public class AccountingManger 
+	public class AccountingManger
 	{
-	
-		public static DataTable GetAccountingList(string userID)
-		{
-			string connStr = DBHelper.GetConnectingString();
-			string dbCommand = $@"SELECT ID, Caption, Amount, ActType, CreateDate
-                                FROM  Accounting
-								WHERE UserID = @userID
-                               ";
-
-			List<SqlParameter> list = new List<SqlParameter>();
-			list.Add(new SqlParameter("@userID", userID));
-			try
-			{
-				return DBHelper.ReadDataTable(connStr, dbCommand, list);
-			}
-			catch (Exception ex)
-			{
-				Logger.writeLog(ex);
-				return null;
-			}
-		}
-
 
 		/// <summary>
 		/// 查詢流水帳清單
@@ -61,7 +39,12 @@ namespace AccountingNote.DBSource
 				Logger.writeLog(ex);
 				return null;
 			}
-			
+
+		}
+
+		public static object GetAccountingList(string iD)
+		{
+			throw new NotImplementedException();
 		}
 
 
@@ -108,26 +91,26 @@ namespace AccountingNote.DBSource
 					comm.Parameters.AddWithValue("@userID", userID);
 					comm.Parameters.AddWithValue("@caption", Caption);
 					comm.Parameters.AddWithValue("@amount", amount);
-					comm.Parameters.AddWithValue("@actType",actType);
+					comm.Parameters.AddWithValue("@actType", actType);
 					comm.Parameters.AddWithValue("@createDate", DateTime.Now);
 					comm.Parameters.AddWithValue("@body", body);
 					try
 					{
 						conn.Open();
-					    comm.ExecuteNonQuery();
+						comm.ExecuteNonQuery();
 
 					}
 					catch (Exception ex)
 					{
 						Logger.writeLog(ex);
-	
+
 					}
 				}
 			}
 		}
 
 		/// <summary>
-		/// 建立流水帳
+		/// 變更流水帳
 		/// </summary>
 		/// <param name="ID"></param>
 		/// <param name="userID"></param>
@@ -154,71 +137,65 @@ namespace AccountingNote.DBSource
                   ,Body        =  @Body
 				 WHERE ID = @id
 				";
+			List<SqlParameter> paramList = new List<SqlParameter>();
+			paramList.Add(new SqlParameter("@id", ID));
+			paramList.Add(new SqlParameter("@userID", userID));
+			paramList.Add(new SqlParameter("@caption", Caption));
+			paramList.Add(new SqlParameter("@amount", amount));
+			paramList.Add(new SqlParameter("@actType", actType));
+			paramList.Add(new SqlParameter("@createDate", DateTime.Now));
+			paramList.Add(new SqlParameter("@body", body));
+
+
 
 			//connect db & exexute
-			using (SqlConnection conn = new SqlConnection(connStr))
+			try
 			{
-				using (SqlCommand comm = new SqlCommand(dbCommand, conn))
-				{
-					comm.Parameters.AddWithValue("@id", ID);
-					comm.Parameters.AddWithValue("@userID", userID);
-					comm.Parameters.AddWithValue("@caption", Caption);
-					comm.Parameters.AddWithValue("@amount", amount);
-					comm.Parameters.AddWithValue("@actType", actType);
-					comm.Parameters.AddWithValue("@createDate", DateTime.Now);
-					comm.Parameters.AddWithValue("@body", body);
-					
-					try
-					{
-						conn.Open();
-						int effectRows = comm.ExecuteNonQuery();
-						if (effectRows == 1)
-							return true;
-						else
-							return false;
+				
+				int effectRows = DBHelper.ModifyData(connStr, dbCommand,paramList);
+				if (effectRows == 1)
+					return true;
+				else
+					return false;
 
-					}
-					catch (Exception ex)
-					{
-						Logger.writeLog(ex);
-						return false;
+			}
+			catch (Exception ex)
+			{
+				Logger.writeLog(ex);
+				return false;
 
-					}
-				}
 			}
 		}   //編輯用
 
+
+		/// <summary>
+		/// 刪除流水帳
+		/// </summary>
+		/// <param name="ID"></param>
 		public static void DeleteAccounting(int ID)
 		{
-			
+
 			string connStr = DBHelper.GetConnectingString();
 			string dbCommand =
 				$@"DELETE [Accounting]
 				 WHERE ID = @id
 				";
 
+			List<SqlParameter> paramList = new List<SqlParameter>();
+			paramList.Add(new SqlParameter("@id", ID));
 			//connect db & exexute
-			using (SqlConnection conn = new SqlConnection(connStr))
-			{
-				using (SqlCommand comm = new SqlCommand(dbCommand, conn))
-				{
-					comm.Parameters.AddWithValue("@id", ID);
-					
-					try
-					{
-						conn.Open();
-					    comm.ExecuteNonQuery();
-						
 
-					}
-					catch (Exception ex)
-					{
-						Logger.writeLog(ex);
-					
-					}
-				}
+			try
+			{
+				DBHelper.ModifyData(connStr, dbCommand, paramList);
+			}
+			catch (Exception ex)
+			{
+				Logger.writeLog(ex);
+
 			}
 		}
+
 
 	}
 }

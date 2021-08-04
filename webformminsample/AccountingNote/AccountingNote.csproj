@@ -74,7 +74,11 @@
     <Content Include="SystemAdmin\AccountingDetail.aspx" />
     <Content Include="SystemAdmin\AccountingList.aspx" />
     <Content Include="SystemAdmin\UserInfo.aspx" />
+    <Content Include="UserControl\ucPager.ascx" />
+    <Content Include="UserControl\ucPager2.ascx" />
+    <Content Include="UserControl\ucPager2ascx.ascx" />
     <Content Include="Web.config" />
+    <Content Include="WebForm1.aspx" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="About.aspx.cs">
@@ -116,6 +120,13 @@
     <Compile Include="SystemAdmin\AccountingList.aspx.designer.cs">
       <DependentUpon>AccountingList.aspx</DependentUpon>
     </Compile>
+    <Compile Include="SystemAdmin\Admin.Master.cs">
+      <DependentUpon>Admin.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SystemAdmin\Admin.Master.designer.cs">
+      <DependentUpon>Admin.Master</DependentUpon>
+    </Compile>
     <Compile Include="SystemAdmin\UserInfo.aspx.cs">
       <DependentUpon>UserInfo.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -123,9 +134,34 @@
     <Compile Include="SystemAdmin\UserInfo.aspx.designer.cs">
       <DependentUpon>UserInfo.aspx</DependentUpon>
     </Compile>
+    <Compile Include="UserControl\ucPager.ascx.cs">
+      <DependentUpon>ucPager.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\ucPager.ascx.designer.cs">
+      <DependentUpon>ucPager.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ucPager2.ascx.designer.cs">
+      <DependentUpon>ucPager2.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ucPager2ascx.ascx.cs">
+      <DependentUpon>ucPager2ascx.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\ucPager2ascx.ascx.designer.cs">
+      <DependentUpon>ucPager2ascx.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="WebForm1.aspx.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="WebForm1.aspx.designer.cs">
+      <DependentUpon>WebForm1.aspx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <Content Include="SystemAdmin\Admin.Master" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -138,6 +174,10 @@
     <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AccountingNote.Auth\AccountingNote.Auth.csproj">
+      <Project>{76e8ebce-3357-4d05-b345-5cfa6bff4adf}</Project>
+      <Name>AccountingNote.Auth</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AccountingNote.DBSource\AccountingNote.DBSource.csproj">
       <Project>{398E7218-A455-46A1-8C8B-C66056406075}</Project>
       <Name>AccountingNote.DBSource</Name>
